@@ -90,11 +90,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'rest_xops',
-        'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': '123456',
-        'PORT': '3306',
-        'OPTIONS': { 'init_command': 'SET storage_engine=INNODB;' }
+        'PASSWORD': 'xglh0901',
+        'HOST': 'localhost',
+        'PORT': '3306'
     }
 }
 
@@ -133,7 +132,7 @@ JWT_AUTH = {
 }
 # redis 设置
 REDIS_HOST = 'localhost'
-REDIS_PORT = 16379
+REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_PASSWORD = None
 
