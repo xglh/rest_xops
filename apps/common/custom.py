@@ -5,7 +5,7 @@ from rest_framework.permissions import BasePermission
 from rest_framework import serializers
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_xops.basic import XopsResponse
+from rest_xops.basic import BaseResponse
 from rest_framework.generics import ListAPIView
 from rest_framework.views import exception_handler
 from errno import errorcode
@@ -115,7 +115,7 @@ class TreeAPIView(ListAPIView):
             results = serializer.data
         if page is not None:
             return self.get_paginated_response(results)
-        return XopsResponse(results)
+        return BaseResponse(results)
 
 
 class CeleryTools(object):

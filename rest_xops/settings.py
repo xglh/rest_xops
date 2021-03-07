@@ -37,13 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
     'channels',
     'corsheaders',  # 跨域
     'django_filters',
     'rbac',
     'cmdb',
-    'deployment',
-
+    'mdm'
 ]
 
 MIDDLEWARE = [

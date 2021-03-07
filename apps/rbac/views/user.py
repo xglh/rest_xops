@@ -10,7 +10,7 @@ from common.custom import CommonPagination, RbacPermission
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.views import APIView
-from rest_xops.basic import XopsResponse
+from rest_xops.basic import BaseResponse
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -20,8 +20,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_xops.settings import SECRET_KEY
 from operator import itemgetter
 from rest_xops.code import *
-from deployment.models import Project
-from cmdb.models import ConnectionInfo
 from django.db.models import Q
 import jwt
 
@@ -40,9 +38,9 @@ class UserAuthView(APIView):
         user = authenticate(username=username, password=password)
         if user:
             payload = jwt_payload_handler(user)
-            return XopsResponse({'token': jwt.encode(payload, SECRET_KEY)}, status=OK)
+            return BaseResponse({'token': jwt.encode(payload, SECRET_KEY)}, status=OK)
         else:
-            return XopsResponse('用户名或密码错误!', status=BAD)
+            return BaseResponse('用户名或密码错误!', status=BAD)
 
 
 class UserInfoView(APIView):
@@ -73,9 +71,9 @@ class UserInfoView(APIView):
                 'createTime': request.user.date_joined,
                 'roles': perms
             }
-            return XopsResponse(data, status=OK)
+            return BaseResponse(data, status=OK)
         else:
-            return XopsResponse('请登录后访问!', status=FORBIDDEN)
+            return BaseResponse('请登录后访问!', status=FORBIDDEN)
 
 
 class UserBuildMenuView(APIView):
@@ -284,9 +282,9 @@ class UserBuildMenuView(APIView):
     def get(self, request):
         if request.user.id is not None:
             menu_data = self.get_all_menus(request)
-            return XopsResponse(menu_data, status=OK)
+            return BaseResponse(menu_data, status=OK)
         else:
-            return XopsResponse('请登录后访问!', status=FORBIDDEN)
+            return BaseResponse('请登录后访问!', status=FORBIDDEN)
 
 
 class UserViewSet(ModelViewSet):
@@ -320,23 +318,21 @@ class UserViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return XopsResponse(serializer.data, status=CREATED, headers=headers)
+        return BaseResponse(serializer.data, status=CREATED, headers=headers)
 
     def destroy(self, request, *args, **kwargs):
         # 删除用户时删除其他表关联的用户
         instance = self.get_object()
         id = str(kwargs['pk'])
-        projects = Project.objects.filter(
-            Q(user_id__icontains=id + ',') | Q(user_id__in=id) | Q(user_id__endswith=',' + id)).values()
-        if projects:
-            for project in projects:
-                user_id = project['user_id'].split(',')
-                user_id.remove(id)
-                user_id = ','.join(user_id)
-                Project.objects.filter(id=project['id']).update(user_id=user_id)
-        ConnectionInfo.objects.filter(uid_id=id).delete()
-        self.perform_destroy(instance)
-        return XopsResponse(status=NO_CONTENT)
+        # projects = Project.objects.filter(
+        #     Q(user_id__icontains=id + ',') | Q(user_id__in=id) | Q(user_id__endswith=',' + id)).values()
+        # if projects:
+        #     for project in projects:
+        #         user_id = project['user_id'].split(',')
+        #         user_id.remove(id)
+        #         user_id = ','.join(user_id)
+        # self.perform_destroy(instance)
+        return BaseResponse(status=NO_CONTENT)
 
     @action(methods=['post'], detail=True, permission_classes=[IsAuthenticated],
             url_path='change-passwd', url_name='change-passwd')
@@ -349,9 +345,9 @@ class UserViewSet(ModelViewSet):
             if new_password1 == new_password2:
                 user.set_password(new_password2)
                 user.save()
-                return XopsResponse('密码修改成功!')
+                return BaseResponse('密码修改成功!')
             else:
-                return XopsResponse('新密码两次输入不一致!', status=status.HTTP_400_BAD_REQUEST)
+                return BaseResponse('新密码两次输入不一致!', status=status.HTTP_400_BAD_REQUEST)
         else:
             old_password = request.data['old_password']
             if check_password(old_password, user.password):
@@ -360,11 +356,11 @@ class UserViewSet(ModelViewSet):
                 if new_password1 == new_password2:
                     user.set_password(new_password2)
                     user.save()
-                    return XopsResponse('密码修改成功!')
+                    return BaseResponse('密码修改成功!')
                 else:
-                    return XopsResponse('新密码两次输入不一致!', status=status.HTTP_400_BAD_REQUEST)
+                    return BaseResponse('新密码两次输入不一致!', status=status.HTTP_400_BAD_REQUEST)
             else:
-                return XopsResponse('旧密码错误!', status=status.HTTP_400_BAD_REQUEST)
+                return BaseResponse('旧密码错误!', status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserListView(ListAPIView):
