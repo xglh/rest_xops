@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 60000 // 请求超时时间
+  timeout: 10000 // 请求超时时间
 })
 
 // request拦截器
@@ -17,15 +17,15 @@ service.interceptors.request.use(
       config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     config.headers['Content-Type'] = 'application/json'
-    if (config.data !== undefined) {
-      if (config.data.excu !== undefined) {
-        if (config.data.excu === 'tail_start') {
-          config.timeout = 60000 * 20
-        } else {
-          config.timeout = 20000
-        }
-      }
-    }
+    // if (config.data !== undefined) {
+    //   if (config.data.excu !== undefined) {
+    //     if (config.data.excu === 'tail_start') {
+    //       config.timeout = 5000
+    //     } else {
+    //       config.timeout = 2000
+    //     }
+    //   }
+    // }
     return config
   },
   error => {

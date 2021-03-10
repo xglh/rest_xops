@@ -42,7 +42,8 @@
         <el-card v-if="show && checkPermission(['admin','role_all','role_edit'])" class="box-card">
           <div slot="header" class="clearfix">
             <span>菜单分配-{{ row_data.name }}</span>
-            <el-button :loading="Loading" icon="el-icon-check" size="mini" type="success" style="float: right; padding: 4px 8px" @click="toSave">保存</el-button>
+            <el-button :loading="Loading" icon="el-icon-close" size="mini" type="danger" style="float: right; padding: 4px 8px" @click="show=false;">关闭</el-button>
+            <el-button :loading="Loading" icon="el-icon-check" size="mini" type="success" style="float: right; padding: 4px 8px;margin-right: 4px" @click="toSave">保存</el-button>
           </div>
           <el-tree
             ref="menu"
@@ -60,7 +61,8 @@
         <el-card v-if="show && checkPermission(['admin','role_all','role_edit'])" class="box-card">
           <div slot="header" class="clearfix">
             <span>权限分配-{{ row_data.name }}</span>
-            <el-button :loading="Loading" icon="el-icon-check" size="mini" type="success" style="float: right; padding: 4px 8px" @click="is_permissions=true; toSave()">保存</el-button>
+            <el-button :loading="Loading" icon="el-icon-close" size="mini" type="danger" style="float: right; padding: 4px 8px" @click="show=false;">关闭</el-button>
+            <el-button :loading="Loading" icon="el-icon-check" size="mini" type="success" style="float: right; padding: 4px 8px;margin-right: 4px" @click="is_permissions=true; toSave()">保存</el-button>
           </div>
           <el-tree
             ref="permission"
@@ -105,7 +107,8 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
+      },
+      cardVisable: true
     }
   },
   created() {

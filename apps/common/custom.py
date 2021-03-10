@@ -24,6 +24,7 @@ def xops_exception_handler(exc, context):
         notification_response['code'] = response.status_code
         notification_response['message'] = msg
         notification_response['detail'] = response.data
+        notification_response['success'] = False
         response.data = notification_response
     return response
 

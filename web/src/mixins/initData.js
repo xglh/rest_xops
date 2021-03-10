@@ -3,7 +3,7 @@ import { initData } from '@/api/data'
 export default {
   data() {
     return {
-      loading: true, data: [], page: 1, size: 10, total: 0, url: '', params: {}, query: {}, time: 170
+      loading: true, data: [], page: 1, size: 10, total: 0, url: '', params: {}, query: {}, time: 5000
     }
   },
   methods: {
@@ -20,6 +20,7 @@ export default {
             this.loading = false
           }, this.time)
           resolve(res)
+          this.loading = false
         }).catch(err => {
           this.loading = false
           reject(err)
